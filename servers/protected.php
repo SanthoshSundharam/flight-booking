@@ -9,7 +9,7 @@ require __DIR__ . '/vendor/autoload.php';  // Load JWT library
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$secret_key = "your_secret_key";  // Must match the key in login.php
+$secret_key = "santhosh123";  // Must match the key in login.php
 
 // Get JWT from Authorization Header
 $headers = getallheaders();

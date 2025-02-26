@@ -1,59 +1,48 @@
 <?php
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
-require __DIR__ . '/vendor/autoload.php'; // Load Composer libraries
-
+require "vendor/autoload.php";
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
-$host = "localhost";  
+$host = "localhost";
+$user = "root";  
+$pass = "root";     
 $db_name = "flight_booking";  
-$username = "root"; 
-$password = "root";  
 
-$conn = new mysqli($host, $username, $password, $db_name);
+$conn = new mysqli($host, $user, $pass, $db_name);
 
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Database connection failed"]));
 }
 
-// Read JSON input
 $data = json_decode(file_get_contents("php://input"));
 
 if (!isset($data->email) || !isset($data->password)) {
-    echo json_encode(["success" => false, "message" => "Email and password required"]);
+    echo json_encode(["success" => false, "message" => "Missing credentials"]);
     exit;
 }
 
 $email = $conn->real_escape_string($data->email);
 $password = $data->password;
 
-// Check if user exists
-$sql = "SELECT * FROM users WHERE email = '$email'";
-$result = $conn->query($sql);
+$query = "SELECT * FROM users WHERE email = '$email'";
+$result = $conn->query($query);
 
-if ($result->num_rows > 0) {
+if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
-
-    // Verify the hashed password
     if (password_verify($password, $user["password"])) {
-        $secret_key = "your_secret_key";  // Change this to a strong secret key
-        $issued_at = time();
-        $expiration_time = $issued_at + (60 * 60 * 24); // 24-hour expiration
-
-        // Create JWT payload
+        $secret_key = "santhosh123";// Replace with a secure key
         $payload = [
-            "iat" => $issued_at,
-            "exp" => $expiration_time,
+            "id" => $user["id"],
             "email" => $user["email"],
-            "id" => $user["id"]
+            "exp" => time() + 3600 // Token expires in 1 hour
         ];
-
         $jwt = JWT::encode($payload, $secret_key, 'HS256');
 
-        echo json_encode(["success" => true, "token" => $jwt, "message" => "Login successful"]);
+        echo json_encode(["success" => true, "token" => $jwt]);
     } else {
         echo json_encode(["success" => false, "message" => "Invalid password"]);
     }
@@ -63,3 +52,6 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
+
+
+
