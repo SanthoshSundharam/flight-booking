@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -10,16 +10,19 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:5000/servers/login.php", {
+      const response = await axios.post("http://localhost:5000/servers/login.php", { 
         email: data.email, 
-        password: data.password
+        password: data.password 
       });
-
-      if (response.data.success) {
+  
+      console.log("Server Response:", response.data); // Debugging
+  
+      if (response.data.success && response.data.token) {
         localStorage.setItem("token", response.data.token);
-        navigate("/home"); // Redirect to home
+        console.log("Token Stored:", localStorage.getItem("token")); // Debugging
+        navigate("/home"); // Redirect to Home Page
       } else {
-        alert(response.data.message); // Show error message
+        alert(response.data.message || "Invalid credentials");
       }
     } catch (error) {
       console.error("Login Error:", error);
@@ -60,6 +63,10 @@ const Login = () => {
             Login
           </Button>
         </form>
+        <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
+          Don't have an account?{" "}
+          <Link to="/">Register here</Link>
+        </Typography>
       </Box>
     </Container>
   );
