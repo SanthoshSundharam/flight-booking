@@ -21,7 +21,6 @@ $conn = new mysqli($host, $user, $pass, $db_name);
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Database connection failed"]));
 }
-
 // Read JSON input
 $data = json_decode(file_get_contents("php://input"));
 
@@ -43,7 +42,7 @@ if (isset($data->name) && isset($data->email) && isset($data->password)) {
         $userId = $conn->insert_id; // Get the newly created user's ID
 
         // Generate JWT Token
-        $secret_key = "your_secret_key";  // Replace with a strong, unique key
+        $secret_key = "santhosh123";  // Replace with a strong, unique key
         $payload = [
             "user_id" => $userId,
             "email" => $email,

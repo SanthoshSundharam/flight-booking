@@ -1,19 +1,17 @@
 <?php
 header("Access-Control-Allow-Origin: http://localhost:5173");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
 
-require "vendor/autoload.php";
+require 'vendor/autoload.php'; // Ensure JWT package is loaded
 use Firebase\JWT\JWT;
 
 $host = "localhost";
-$user = "root";  
-$pass = "root";     
-$db_name = "flight_booking";  
+$user = "root";
+$pass = "root";
+$db_name = "flight_booking";
 
 $conn = new mysqli($host, $user, $pass, $db_name);
-
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Database connection failed"]));
 }
@@ -21,37 +19,31 @@ if ($conn->connect_error) {
 $data = json_decode(file_get_contents("php://input"));
 
 if (!isset($data->email) || !isset($data->password)) {
-    echo json_encode(["success" => false, "message" => "Missing credentials"]);
+    echo json_encode(["success" => false, "message" => "Invalid request"]);
     exit;
 }
 
 $email = $conn->real_escape_string($data->email);
 $password = $data->password;
 
-$query = "SELECT * FROM users WHERE email = '$email'";
-$result = $conn->query($query);
-
+$result = $conn->query("SELECT * FROM users WHERE email = '$email'");
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
-    if (password_verify($password, $user["password"])) {
-        $secret_key = "santhosh123";// Replace with a secure key
+    
+    if (password_verify($password, $user['password'])) {
+        $secret_key = "your-secret-key"; // Set this in a config file for security
         $payload = [
-            "id" => $user["id"],
+            "user_id" => $user["id"],
             "email" => $user["email"],
-            "exp" => time() + 3600 // Token expires in 1 hour
+            "exp" => time() + (60 * 60) // Token expires in 1 hour
         ];
         $jwt = JWT::encode($payload, $secret_key, 'HS256');
 
         echo json_encode(["success" => true, "token" => $jwt]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Invalid password"]);
+        exit;
     }
-} else {
-    echo json_encode(["success" => false, "message" => "User not found"]);
 }
 
+echo json_encode(["success" => false, "message" => "Invalid email or password"]);
 $conn->close();
 ?>
-
-
-

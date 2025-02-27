@@ -6,24 +6,23 @@ header("Access-Control-Allow-Credentials: true");
 
 require __DIR__ . '/vendor/autoload.php';  // Load JWT library
 
+require 'vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$secret_key = "santhosh123";  // Must match the key in login.php
-
-// Get JWT from Authorization Header
+$secret_key = "your-secret-key";
 $headers = getallheaders();
-if (!isset($headers["Authorization"])) {
+$token = isset($headers["Authorization"]) ? str_replace("Bearer ", "", $headers["Authorization"]) : null;
+
+if (!$token) {
     echo json_encode(["success" => false, "message" => "Token missing"]);
     exit;
 }
 
-$token = str_replace("Bearer ", "", $headers["Authorization"]);  // Remove "Bearer " prefix
-
 try {
-    $decoded = JWT::decode($token, new Key($secret_key, 'HS256'));  // Decode JWT
+    $decoded = JWT::decode($token, new Key($secret_key, 'HS256'));
     echo json_encode(["success" => true, "message" => "Access granted", "user" => $decoded]);
 } catch (Exception $e) {
-    echo json_encode(["success" => false, "message" => "Invalid or expired token"]);
+    echo json_encode(["success" => false, "message" => "Invalid token"]);
 }
 ?>
