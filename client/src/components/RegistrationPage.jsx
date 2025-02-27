@@ -40,7 +40,7 @@ const RegistrationPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:5000/servers/register.php", data);
+      const response = await axios.post("http://localhost:8000/servers/register.php", data);
       
       if (response.data.success) {
         localStorage.setItem("token", response.data.token); // Store token
@@ -53,7 +53,6 @@ const RegistrationPage = () => {
       alert("Registration failed. Try again.");
     }
   };
-  
   
 
   return (

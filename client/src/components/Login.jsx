@@ -10,7 +10,7 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:5000/servers/login.php", { 
+      const response = await axios.post("http://localhost:8000/servers/login.php", { 
         email: data.email, 
         password: data.password 
       });

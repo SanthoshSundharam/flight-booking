@@ -3,6 +3,8 @@ import axios from "axios";
 import { Container, Typography, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
+import Header from "./Header";
+import FlightSearch from "./FlightSearch";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -22,7 +24,7 @@ const HomePage = () => {
 
       // Verify token with backend
       axios
-        .get("http://localhost:5000/servers/protected.php", {
+        .get("http://localhost:8000/servers/protected.php", {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -47,14 +49,10 @@ const HomePage = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h4">Welcome {user?.email}</Typography>
-        <Button onClick={handleLogout} variant="contained" color="secondary" sx={{ mt: 2 }}>
-          Logout
-        </Button>
-      </Box>
-    </Container>
+    <>
+      <Header />
+      <FlightSearch/>
+    </>
   );
 };
 
