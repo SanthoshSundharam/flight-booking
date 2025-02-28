@@ -40,8 +40,11 @@ const RegistrationPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:8000/servers/register.php", data);
-      
+      const response = await axios.post(
+        "http://localhost:8000/servers/register.php",
+        data
+      );
+
       if (response.data.success) {
         localStorage.setItem("token", response.data.token); // Store token
         navigate("/home"); // Redirect to Home page directly
@@ -53,12 +56,31 @@ const RegistrationPage = () => {
       alert("Registration failed. Try again.");
     }
   };
-  
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h5" gutterBottom>
+    <Container
+      maxWidth="lg"
+      minWidth="sm"
+      sx={{
+        display: flex,
+        justifyContent: "center",
+        alignContent: "center",
+        gap: 2,
+        borderRadius: 4,
+      }}
+      style={{ padding: "0px" , backgroundColor:"#FAFAFA"}}
+    >
+      <Box
+        sx={{
+          mt: 5,
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          width: 1/2,
+          justifyContent: "center",
+        }}
+      >
+        <Typography variant="h5" gutterBottom style={{textAlign:"center"}}>
           Register
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -105,21 +127,31 @@ const RegistrationPage = () => {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, backgroundColor:"#555F6E" }}
           >
             Register
           </Button>
 
-
           <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
-          Already have an account?{" "}
-          <Link to="/login" underline="hover">
-            Login here
-          </Link>
-        </Typography>
+            Already have an account?{" "}
+            <Link to="/" underline="hover">
+              Login here
+            </Link>
+          </Typography>
         </form>
-        
       </Box>
+      <Box
+        component="img"
+        sx={{
+          width: 1 / 2,
+          borderTopRightRadius: 10,
+          borderBottomRightRadius: 10,
+          borderTopLeftRadius: 0,
+          borderBottomLeftRadius: 0,
+        }}
+        alt="The house from the offer."
+        src="https://cdn.create.vista.com/downloads/b4ee97fc-2f83-4239-980d-0a6134c46c53_1024.jpeg"
+      ></Box>
     </Container>
   );
 };

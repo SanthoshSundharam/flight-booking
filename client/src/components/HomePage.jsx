@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Typography, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import Header from "./Header";
@@ -50,7 +49,7 @@ const HomePage = () => {
 
   return (
     <>
-      <Header />
+      <Header/>
       <FlightSearch/>
     </>
   );

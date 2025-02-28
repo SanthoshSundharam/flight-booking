@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -11,34 +10,60 @@ import {
 import axios from "axios";
 
 const FlightSearch = () => {
-  const { register, handleSubmit, watch, reset, control } = useForm();
+  const [formData, setFormData] = useState({
+    origin: "",
+    destination: "",
+    date: "",
+    numPassengers: "",
+  });
+
   const [passengers, setPassengers] = useState([]);
+  const [passengerData, setPassengerData] = useState([]);
 
-  // Watch number of passengers field
-  const numPassengers = watch("numPassengers", 0);
+  // Handle Input Change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-
-  useEffect(() => {
-    setPassengers(Array.from({ length: numPassengers }, (_, index) => index));
-  }, [numPassengers]);
-
-
-  const handleSearch = () => {
-    if (numPassengers > 0) {
-      setPassengers(Array.from({ length: numPassengers }, (_, index) => index));
+  // Handle Search Button Click
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (formData.numPassengers > 0) {
+      setPassengers(Array.from({ length: Number(formData.numPassengers) }, () => ({})));
+      setPassengerData(
+        Array.from({ length: Number(formData.numPassengers) }, () => ({
+          firstName: "",
+          lastName: "",
+          age: "",
+          gender: "",
+        }))
+      );
     }
   };
 
-  // Function to handle submission (stores data and resets form)
-  const onSubmit = async (data) => {
+  // Handle Passenger Input Change
+  const handlePassengerChange = (index, e) => {
+    const newPassengers = [...passengerData];
+    newPassengers[index][e.target.name] = e.target.value;
+    setPassengerData(newPassengers);
+  };
+
+  // Handle Submit Button
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const response = await axios.post(
         "http://localhost:8000/servers/passengers.php",
-        data
+        { passengers: passengerData }
       );
       alert(response.data.message);
-      reset();
       setPassengers([]);
+      setFormData({
+        origin: "",
+        destination: "",
+        date: "",
+        numPassengers: "",
+      });
     } catch (error) {
       console.error("Error storing passengers:", error);
       alert("Failed to store passengers");
@@ -46,40 +71,54 @@ const FlightSearch = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ height:"50vh" }}>
-      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2,}}>
-        <Typography variant="h5" gutterBottom sx={{textAlign:"center", pb:2}}>
+    <Container maxWidth="lg" sx={{ height: "50vh" }}>
+      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ textAlign: "center", pb: 2 }}
+        >
           Flight Search
         </Typography>
 
-        <form onSubmit={handleSubmit(handleSearch)} style={{display:"flex", gap:12, alignItems:"center"}}>
+        <form
+          onSubmit={handleSearch}
+          style={{ display: "flex", gap: 12, alignItems: "center" }}
+        >
           <TextField
-            label="Origin"
+            name="origin"
+            placeholder="Enter Origin"
             fullWidth
             margin="normal"
-            {...register("origin", { required: true })}
+            value={formData.origin}
+            onChange={handleChange}
           />
           <TextField
-          // sx={{backgroundColor:"whitesmoke"}}
-            label="Destination"
+            name="destination"
+            placeholder="Destination"
             fullWidth
             margin="normal"
-            {...register("destination", { required: true })}
+            value={formData.destination}
+            onChange={handleChange}
           />
           <TextField
-            label="Date"
+            name="date"
+            placeholder="Date"
             type="date"
             fullWidth
             margin="normal"
-            {...register("date", { required: true })}
-             InputLabelProps={{ shrink: true }}
+            value={formData.date}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
-            label="Number of Passengers"
+            name="numPassengers"
+            placeholder="No of Passengers"
             type="number"
             fullWidth
             margin="normal"
-            {...register("numPassengers", { required: true, min: 1 })}
+            value={formData.numPassengers}
+            onChange={handleChange}
           />
 
           <Button
@@ -87,66 +126,76 @@ const FlightSearch = () => {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ m: 1,borderRadius:"50px", fontWeight:"600", p:1, alignItems:"center" }}
+            sx={{
+              m: 1,
+              fontWeight: "600",
+              px: 5,
+              width: 100,
+            }}
           >
             Search
           </Button>
         </form>
+      </Box>
 
-        {passengers.length > 0 && (
-          <form onSubmit={handleSubmit(onSubmit)} >
-            <Typography variant="h6" sx={{ mt: 3 }}>
-              Enter Passenger Details
-            </Typography>
+      {passengers.length > 0 && (
+        <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
+          <form onSubmit={handleSubmit}>
+            <Typography variant="h6">Enter Passenger Details</Typography>
 
             {passengers.map((_, index) => (
               <Box
                 key={index}
-                sx={{ mt: 3, p: 2, border: "1px solid gray", borderRadius: 1, display:"flex", gap:3 }}
+                sx={{
+                  mt: 3,
+                  p: 2,
+                  border: "1px solid gray",
+                  borderRadius: 1,
+                  display: "flex",
+                  gap: 3,
+                }}
               >
                 <TextField
-                  label="First Name"
+                  name="firstName"
+                  placeholder="Firstname"
                   fullWidth
                   margin="normal"
-                  {...register(`passengers[${index}].firstName`, {
-                    required: true,
-                  })}
+                  variant="filled"
+                  value={passengerData[index]?.firstName || ""}
+                  onChange={(e) => handlePassengerChange(index, e)}
                 />
                 <TextField
-                  label="Last Name"
+                  name="lastName"
+                  placeholder="Lastname"
                   fullWidth
                   margin="normal"
-                  {...register(`passengers[${index}].lastName`, {
-                    required: true,
-                  })}
+                  variant="filled"
+                  value={passengerData[index]?.lastName || ""}
+                  onChange={(e) => handlePassengerChange(index, e)}
                 />
                 <TextField
-                  label="Age"
+                  name="age"
+                  placeholder="Age"
                   type="number"
                   fullWidth
                   margin="normal"
-                  {...register(`passengers[${index}].age`, {
-                    required: true,
-                    min: 1,
-                  })}
+                  variant="filled"
+                  value={passengerData[index]?.age || ""}
+                  onChange={(e) => handlePassengerChange(index, e)}
                 />
-                <Controller
-                  name={`passengers[${index}].gender`}
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      select
-                      label="Gender"
-                      fullWidth
-                      margin="normal"
-                    >
-                      <MenuItem value="Male">Male</MenuItem>
-                      <MenuItem value="Female">Female</MenuItem>
-                    </TextField>
-                  )}
-                />
+                <TextField
+                  name="gender"
+                  select
+                  label="Gender"
+                  fullWidth
+                  margin="normal"
+                  variant="filled"
+                  value={passengerData[index]?.gender || ""}
+                  onChange={(e) => handlePassengerChange(index, e)}
+                >
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
+                </TextField>
               </Box>
             ))}
 
@@ -154,13 +203,13 @@ const FlightSearch = () => {
               type="submit"
               variant="contained"
               color="secondary"
-               sx={{ mt: 2, w:100, borderRadius:"50px" }}
+              sx={{ mt: 2, w: 100, borderRadius: "50px" }}
             >
               Submit
             </Button>
           </form>
-        )}
-      </Box>
+        </Box>
+      )}
     </Container>
   );
 };

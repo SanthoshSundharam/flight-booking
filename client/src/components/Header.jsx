@@ -14,7 +14,7 @@ const Header = ({ user }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     alert("Successfully Logged Out");
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -35,7 +35,6 @@ const Header = ({ user }) => {
             alt="The house from the offer."
             src="https://d12lchh0gjjhot.cloudfront.net/qa/uploadFiles/portalLogo/414_1729072841_portal_logo.svg"
           ></Box>
-
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Button variant="contained" color="error" onClick={handleLogout} style={{borderRadius:"50px", textAlign:"center", fontSize:"10px", lineHeight:"20px",fontWeight:"bold"}}>
               Logout
