@@ -3,16 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-$host = "localhost";
-$user = "root";  
-$pass = "root";     
-$db_name = "flight_booking";  
-
-$conn = new mysqli($host, $user, $pass, $db_name);
-
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Database connection failed"]));
-}
+include "./dp.php";
 
 $data = json_decode(file_get_contents("php://input"));
 

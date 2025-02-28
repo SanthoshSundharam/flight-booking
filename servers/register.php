@@ -10,17 +10,9 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
-// Database Connection
-$host = "localhost";
-$user = "root";  
-$pass = "root";     
-$db_name = "flight_booking";  
 
-$conn = new mysqli($host, $user, $pass, $db_name);
+include "./dp.php";
 
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Database connection failed"]));
-}
 // Read JSON input
 $data = json_decode(file_get_contents("php://input"));
 
@@ -29,24 +21,24 @@ if (isset($data->name) && isset($data->email) && isset($data->password)) {
     $email = $conn->real_escape_string($data->email);
     $password = password_hash($data->password, PASSWORD_DEFAULT);
 
-    // Check if email already exists
+
     $check_email = $conn->query("SELECT id FROM users WHERE email = '$email'");
     if ($check_email->num_rows > 0) {
         echo json_encode(["success" => false, "message" => "Email already exists"]);
         exit;
     }
 
-    // Insert user into database
+
     $query = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$password')";
     if ($conn->query($query)) {
-        $userId = $conn->insert_id; // Get the newly created user's ID
+        $userId = $conn->insert_id; 
 
         // Generate JWT Token
-        $secret_key = "santhosh123";  // Replace with a strong, unique key
+        $secret_key = "santhosh123";  
         $payload = [
             "user_id" => $userId,
             "email" => $email,
-            "exp" => time() + (60 * 60) // Token expires in 1 hour
+            "exp" => time() + (60 * 60) 
         ];
         $token = JWT::encode($payload, $secret_key, 'HS256');
 

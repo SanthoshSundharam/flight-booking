@@ -6,16 +6,7 @@ header("Content-Type: application/json");
 require 'vendor/autoload.php'; // Ensure JWT package is loaded
 use Firebase\JWT\JWT;
 
-$host = "localhost";
-$user = "root";
-$pass = "root";
-$db_name = "flight_booking";
-
-$conn = new mysqli($host, $user, $pass, $db_name);
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Database connection failed"]));
-}
-
+include "./dp.php";
 $data = json_decode(file_get_contents("php://input"));
 
 if (!isset($data->email) || !isset($data->password)) {
