@@ -54,7 +54,12 @@ const FlightSearch = () => {
     try {
       const response = await axios.post(
         "http://localhost:8000/servers/passengers.php",
-        { passengers: passengerData }
+        { 
+          origin: formData.origin,
+          destination: formData.destination,
+          date: formData.date,
+          passengers: passengerData 
+        }
       );
       alert(response.data.message);
       setPassengers([]);
@@ -64,12 +69,13 @@ const FlightSearch = () => {
         date: "",
         numPassengers: "",
       });
+      console.log(response.data);
     } catch (error) {
       console.error("Error storing passengers:", error);
-      alert("Failed to store passengers");
+      alert("Please fill/check your details");
     }
   };
-
+  
   return (
     <Container maxWidth="lg" sx={{ height: "50vh" }}>
       <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>

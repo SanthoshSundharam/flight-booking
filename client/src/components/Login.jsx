@@ -38,21 +38,41 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ display: "flex",justifyContent:"center",alignContent:"center", gap:2, p:0,backgroundImage:"linear-gradient(to bottom, #C9C9C9, #FAFAFA)", borderRadius: 6,  }} style={{padding:"0px", }}>
+    <Container
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignContent: "center",
+        gap: 2,
+        p: 0,
+        backgroundColor: "#FAFAFA",
+        borderRadius: 6,
+        height: "98vh",
+      }}
+      style={{ padding: "0px" }}
+    >
       <Box
         component="img"
         sx={{
-          width: 1/2,
-          borderTopRightRadius:0,
-          borderBottomRightRadius:0,
-          borderTopLeftRadius:24,
-          borderBottomLeftRadius:24,
+          width: 1 / 2,
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          borderTopLeftRadius: 24,
+          borderBottomLeftRadius: 24,
         }}
         alt="The house from the offer."
         src="https://cdn.create.vista.com/downloads/b4ee97fc-2f83-4239-980d-0a6134c46c53_1024.jpeg"
       ></Box>
-      <Box sx={{ mt: 5, p: 3, display:"flex", flexDirection:"column", width:1/2, justifyContent:"center", }}>
-        <Typography variant="h5" gutterBottom style={{textAlign:"center"}}>
+      <Box
+        sx={{
+          mt: 5,
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <Typography variant="h5" gutterBottom style={{ textAlign: "center" }}>
           Login
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -86,7 +106,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ mt: 2,backgroundColor:"#555F6E" }}
+            sx={{ mt: 2, backgroundColor: "#555F6E" }}
           >
             Login
           </Button>

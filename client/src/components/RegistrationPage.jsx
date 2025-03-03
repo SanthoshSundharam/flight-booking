@@ -47,7 +47,7 @@ const RegistrationPage = () => {
 
       if (response.data.success) {
         localStorage.setItem("token", response.data.token); // Store token
-        navigate("/home"); // Redirect to Home page directly
+        navigate("/home");
       } else {
         alert(response.data.message);
       }
@@ -59,28 +59,26 @@ const RegistrationPage = () => {
 
   return (
     <Container
-      maxWidth="lg"
-      minWidth="sm"
       sx={{
-        display: flex,
+        display: "flex",
         justifyContent: "center",
         alignContent: "center",
         gap: 2,
         borderRadius: 4,
       }}
-      style={{ padding: "0px" , backgroundColor:"#FAFAFA"}}
+      style={{ padding: "0px", backgroundColor: "#FAFAFA", height: "98vh" }}
     >
       <Box
         sx={{
           mt: 5,
           p: 3,
+          width: 1 / 2,
           display: "flex",
           flexDirection: "column",
-          width: 1/2,
           justifyContent: "center",
         }}
       >
-        <Typography variant="h5" gutterBottom style={{textAlign:"center"}}>
+        <Typography variant="h5" gutterBottom style={{ textAlign: "center" }}>
           Register
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -127,7 +125,7 @@ const RegistrationPage = () => {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ mt: 2, backgroundColor:"#555F6E" }}
+            sx={{ mt: 2, backgroundColor: "#555F6E" }}
           >
             Register
           </Button>

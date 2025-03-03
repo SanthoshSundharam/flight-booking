@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Header from "./Header";
 import FlightSearch from "./FlightSearch";
+import { Button, Box } from "@mui/material";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -18,10 +19,9 @@ const HomePage = () => {
     }
 
     try {
-      const decoded = jwtDecode(token); // Decode token to get user info
+      const decoded = jwtDecode(token);
       setUser(decoded);
 
-      // Verify token with backend
       axios
         .get("http://localhost:8000/servers/protected.php", {
           headers: { Authorization: `Bearer ${token}` },
@@ -47,10 +47,22 @@ const HomePage = () => {
     navigate("/login");
   };
 
+
+  const handleNavigateToUserList = () => {
+    navigate("/users");
+  };
+
   return (
     <>
-      <Header/>
-      <FlightSearch/>
+      <Header />
+
+      <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+        <Button variant="contained" color="secondary" onClick={handleNavigateToUserList}>
+          Users
+        </Button>
+      </Box>
+
+      <FlightSearch />
     </>
   );
 };
