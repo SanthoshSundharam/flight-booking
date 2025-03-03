@@ -34,7 +34,6 @@ const Header = ({ user }) => {
             src="https://d12lchh0gjjhot.cloudfront.net/qa/uploadFiles/portalLogo/414_1729072841_portal_logo.svg"
           ></Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Button variant="contained"><Link to="/users"></Link>Users</Button>
             <Button variant="contained" color="error" onClick={handleLogout} style={{borderRadius:"50px", textAlign:"center", fontSize:"10px", lineHeight:"20px",fontWeight:"bold"}}>
               Logout
             </Button>

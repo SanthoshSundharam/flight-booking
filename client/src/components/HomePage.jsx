@@ -14,7 +14,7 @@ const HomePage = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      navigate("/login"); // No token, redirect to login
+      navigate("/"); // No token, redirect to login
       return;
     }
 
@@ -33,18 +33,18 @@ const HomePage = () => {
         })
         .catch(() => {
           localStorage.removeItem("token");
-          navigate("/login");
+          navigate("/");
         });
 
     } catch (error) {
       localStorage.removeItem("token");
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
 
@@ -55,14 +55,12 @@ const HomePage = () => {
   return (
     <>
       <Header />
-
+      <FlightSearch />
       <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
         <Button variant="contained" color="secondary" onClick={handleNavigateToUserList}>
-          Users
+          Passengers List
         </Button>
       </Box>
-
-      <FlightSearch />
     </>
   );
 };

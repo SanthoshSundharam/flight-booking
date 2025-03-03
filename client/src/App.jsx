@@ -7,7 +7,8 @@ import UserList from "./components/UserList";
 
 function App() {
   return (
-    <Router>
+    <div style={{ backgroundRepeat: 'no-repeat', backgroundSize:"cover", height:"100%"}}>
+      <Router>
       <Routes>
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/" element={<Login />} />
@@ -15,6 +16,8 @@ function App() {
         <Route path="/users" element={<UserList />} />
       </Routes>
     </Router>
+    </div>
+    
   );
 }
 
