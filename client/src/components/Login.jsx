@@ -1,8 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { TextField, Button, Container, Typography, Box, Paper } from "@mui/material";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from "sweetalert2"; 
+import Image from '../assets/bgLogin.jpg';
 
 const Login = () => {
   const {
@@ -14,108 +16,92 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/servers/login.php",
-        {
-          email: data.email,
-          password: data.password,
-        }
-      );
-
-      console.log("Server Response:", response.data); // Debugging
+      const response = await axios.post("http://localhost:8000/servers/login.php", {
+        email: data.email,
+        password: data.password,
+      });
 
       if (response.data.success && response.data.token) {
         localStorage.setItem("token", response.data.token);
-        console.log("Token Stored:", localStorage.getItem("token")); // Debugging
-        navigate("/home"); // Redirect to Home Page
+        localStorage.setItem("email", response.data.email);
+
+        // ✅ SweetAlert for successful login
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "Welcome back!",
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          navigate("/home");
+        });
+
       } else {
-        alert(response.data.message || "Invalid credentials");
+        // ❌ SweetAlert for invalid credentials
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: response.data.message || "Invalid email or password",
+        });
       }
+
     } catch (error) {
       console.error("Login Error:", error);
-      alert("Login failed. Please try again.");
+      
+      // ⚠️ SweetAlert for network errors
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: "Something went wrong. Please try again later.",
+      });
     }
   };
 
   return (
-    <Container
+    <Box
       sx={{
+        height: "100vh",
         display: "flex",
         justifyContent: "center",
-        alignContent: "center",
-        gap: 2,
-        p: 0,
-        backgroundColor: "#FAFAFA",
-        borderRadius: 6,
-        height: "98vh",
+        alignItems: "center",
+        backgroundImage: `url(${Image})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
       }}
-      style={{ padding: "0px" }}
     >
-      <Box
-        component="img"
-        sx={{
-          width: 1 / 2,
-          borderTopRightRadius: 0,
-          borderBottomRightRadius: 0,
-          borderTopLeftRadius: 24,
-          borderBottomLeftRadius: 24,
-        }}
-        alt="The house from the offer."
-        src="https://cdn.create.vista.com/downloads/b4ee97fc-2f83-4239-980d-0a6134c46c53_1024.jpeg"
-      ></Box>
-      <Box
-        sx={{
-          mt: 5,
-          p: 3,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <Typography variant="h5" gutterBottom style={{ textAlign: "center" }}>
+      <Paper elevation={10} sx={{ padding: 6, maxWidth: 350, textAlign: "center", backgroundColor: "rgba(255, 255, 255, 0.938)", borderRadius: 3 }}>
+        <Typography variant="h5" gutterBottom>
           Login
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            fullWidth
-            label="Email"
-            variant="outlined"
-            margin="normal"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: "Invalid email format",
-              },
-            })}
-            error={!!errors.email}
-            helperText={errors.email?.message}
+          <TextField 
+            fullWidth 
+            label="Email" 
+            variant="outlined" 
+            margin="normal" 
+            {...register("email", { required: "Email is required", pattern: { value: /^\S+@\S+\.\S+$/, message: "Invalid email format" } })} 
+            error={!!errors.email} 
+            helperText={errors.email?.message} 
           />
-          <TextField
-            fullWidth
-            type="password"
-            label="Password"
-            variant="outlined"
-            margin="normal"
-            {...register("password", { required: "Password is required" })}
-            error={!!errors.password}
-            helperText={errors.password?.message}
+          <TextField 
+            fullWidth 
+            type="password" 
+            label="Password" 
+            variant="outlined" 
+            margin="normal" 
+            {...register("password", { required: "Password is required" })} 
+            error={!!errors.password} 
+            helperText={errors.password?.message} 
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2, backgroundColor: "#555F6E" }}
-          >
+          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, backgroundColor: "#3d97d3" }}>
             Login
           </Button>
         </form>
-        <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
-          Don't have an account? <Link to="/register">Register here</Link>
+        <Typography variant="body1" sx={{ mt: 3 }}>
+          Don't have an account? <Link to="/register">  Register here</Link>
         </Typography>
-      </Box>
-    </Container>
+      </Paper>
+    </Box>
   );
 };
 

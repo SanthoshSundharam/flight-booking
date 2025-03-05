@@ -16,7 +16,6 @@ if (!isset($data->email) || !isset($data->password)) {
 
 $email = $conn->real_escape_string($data->email);
 $password = $data->password;
-
 $result = $conn->query("SELECT * FROM users WHERE email = '$email'");
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
@@ -30,7 +29,7 @@ if ($result->num_rows === 1) {
         ];
         $jwt = JWT::encode($payload, $secret_key, 'HS256');
 
-        echo json_encode(["success" => true, "token" => $jwt]);
+        echo json_encode(["success" => true, "token" => $jwt, "email" => $user["email"]]);
         exit;
     }
 }

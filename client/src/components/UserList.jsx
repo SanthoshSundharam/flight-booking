@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { styled } from "@mui/material/styles";
-import { purple } from "@mui/material/colors";
 import axios from "axios";
+import Swal from "sweetalert2";
 import {
   Container,
   Typography,
@@ -14,45 +13,42 @@ import {
   Paper,
   Button,
   TextField,
+  Box,
 } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 
-const UserList = ({ refreshTrigger }) => {
-  const ColorButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.getContrastText(purple[500]),
-    backgroundColor: purple[500],
-    "&:hover": {
-      backgroundColor: purple[700],
-    },
-  }));
-  const [passengers, setPassengers] = useState([]);
+const UserList = () => {
+  const [passengers, setPassengers] = useState({});
   const [editPassenger, setEditPassenger] = useState(null);
-  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPassengers();
-  }, [refreshTrigger]);
+  }, []);
 
   const fetchPassengers = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8000/servers/get_passengers.php"
-      );
-      console.log("API Response:", response.data);
+    const email = localStorage.getItem("email");
+    if (!email) {
+      Swal.fire("Error", "User email is missing.", "error");
+      return;
+    }
 
-      if (response.data.success && response.data.data) {
-        setPassengers(response.data.data);
+    try {
+      const response = await axios.get(`http://localhost:8000/servers/get_passengers.php?email=${email}`);
+      if (response.data.success && response.data.passengers) {
+        setPassengers(response.data.passengers);
       } else {
-        setPassengers([]);
+        setPassengers({});
+        Swal.fire("No Data", "No passengers found.", "info");
       }
     } catch (error) {
       console.error("Error fetching passengers:", error);
-      setError("Failed to fetch passengers");
-      setPassengers([]);
+      Swal.fire("Error", "Failed to fetch passengers", "error");
     }
   };
 
-  // ✅ Handle Edit
   const handleEdit = (passenger) => {
     setEditPassenger(passenger);
   };
@@ -62,222 +58,141 @@ const UserList = ({ refreshTrigger }) => {
       await axios.post(
         "http://localhost:8000/servers/update_passenger.php",
         editPassenger,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
       setEditPassenger(null);
       fetchPassengers();
+      Swal.fire("Success", "Passenger details updated successfully!", "success");
     } catch (error) {
       console.error("Error updating passenger:", error);
+      Swal.fire("Error", "Failed to update passenger details.", "error");
     }
   };
 
-  const navigate = useNavigate();
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this passenger?")) {
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/servers/delete_passenger.php",
-          {
-            action: "delete",
-            id: id,
-          }
-        );
-
-        if (response.data.success) {
-          alert("Passenger deleted successfully");
+  const handleDeleteBooking = async (bookingId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This will delete the entire booking and all passengers under it!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.post("http://localhost:8000/servers/delete_passenger.php", { booking_id: bookingId });
           fetchPassengers();
-        } else {
-          alert("Failed to delete passenger");
+          Swal.fire("Deleted!", "Booking has been deleted.", "success");
+        } catch (error) {
+          console.error("Error deleting booking:", error);
+          Swal.fire("Error", "Failed to delete booking.", "error");
         }
-      } catch (error) {
-        console.error("Error deleting passenger:", error);
       }
-    }
+    });
   };
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" sx={{ textAlign: "center", mb: 3 }}>
         Passenger List
       </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Button variant="contained" color="primary" onClick={fetchPassengers}>
+          Refresh List
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => navigate("/home")}>
+          Back
+        </Button>
+      </Box>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={fetchPassengers}
-        sx={{ mb: 2 }}
-      >
-        Refresh List
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ mb: 2 }}
-        onClick={() => navigate("/home")}
-      >
-        Back
-      </Button>
-
-      <TableContainer component={Paper}>
+      <TableContainer maxWidth component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
-              <TableCell>
-                <strong>First Name</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Last Name</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Age</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Gender</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Origin</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Destination</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Date</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Actions</strong>
-              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Passenger</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>First Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Last Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Age</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Gender</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Origin</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Destination</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Date</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {passengers.map((passenger) => (
-              <TableRow key={passenger.id}>
-                {editPassenger?.id === passenger.id ? (
-                  <>
-                    <TableCell>
-                      <TextField
-                        value={editPassenger.first_name}
-                        onChange={(e) =>
-                          setEditPassenger({
-                            ...editPassenger,
-                            first_name: e.target.value,
-                          })
-                        }
-                      />
+            {Object.keys(passengers).length > 0 ? (
+              Object.entries(passengers).map(([bookingId, passengerGroup]) => (
+                <React.Fragment key={bookingId}>
+                  <TableRow>
+                    <TableCell colSpan={9} sx={{ backgroundColor: "#e0e0e0", fontWeight: "bold", textAlign: "center" }}>
+                      Booking ID: {bookingId.substring(0,5)+bookingId.substring(9,13)}
                     </TableCell>
-                    <TableCell>
-                      <TextField
-                        value={editPassenger.last_name}
-                        onChange={(e) =>
-                          setEditPassenger({
-                            ...editPassenger,
-                            last_name: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        value={editPassenger.age}
-                        onChange={(e) =>
-                          setEditPassenger({
-                            ...editPassenger,
-                            age: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        value={editPassenger.gender}
-                        onChange={(e) =>
-                          setEditPassenger({
-                            ...editPassenger,
-                            gender: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        value={editPassenger.origin}
-                        onChange={(e) =>
-                          setEditPassenger({
-                            ...editPassenger,
-                            origin: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        value={editPassenger.destination}
-                        onChange={(e) =>
-                          setEditPassenger({
-                            ...editPassenger,
-                            destination: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        value={editPassenger.travel_date}
-                        onChange={(e) =>
-                          setEditPassenger({
-                            ...editPassenger,
-                            travel_date: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell style={{ gap: "10px", display: "flex" }}>
-                      <Button
-                        onClick={handleUpdate}
-                        color="success"
-                        variant="contained"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        onClick={() => setEditPassenger(null)}
-                        color="secondary"
-                      >
-                        Cancel
+                  </TableRow>
+                  {passengerGroup.map((passenger, index) => (
+                    <TableRow key={passenger.id}>
+                      <TableCell sx={{ textAlign: "center" }}>Passenger {index + 1}</TableCell>
+                      {editPassenger?.id === passenger.id ? (
+                        <>
+                          <TableCell><TextField size="small"  sx={{width:"120px"}} value={editPassenger.first_name} onChange={(e) => setEditPassenger({ ...editPassenger, first_name: e.target.value })} /></TableCell>
+                          <TableCell><TextField size="small" sx={{width:"120px"}} value={editPassenger.last_name} onChange={(e) => setEditPassenger({ ...editPassenger, last_name: e.target.value })} /></TableCell>
+                          <TableCell><TextField size="small" sx={{width:"80px"}} value={editPassenger.age} onChange={(e) => setEditPassenger({ ...editPassenger, age: e.target.value })} /></TableCell>
+                          <TableCell>
+                            <TextField
+                              select
+                              SelectProps={{ native: true }}
+                              size="small"
+                              value={editPassenger.gender}
+                              onChange={(e) => setEditPassenger({ ...editPassenger, gender: e.target.value })}
+                            >
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                              <option value="Other">Other</option>
+                            </TextField>
+                          </TableCell>
+                          <TableCell><TextField size="small" sx={{width:"120px"}} value={editPassenger.origin} onChange={(e) => setEditPassenger({ ...editPassenger, origin: e.target.value })} /></TableCell>
+                          <TableCell><TextField size="small" sx={{width:"120px"}} value={editPassenger.destination} onChange={(e) => setEditPassenger({ ...editPassenger, destination: e.target.value })} /></TableCell>
+                          <TableCell><TextField size="small" type="date" sx={{width:"80px"}} value={editPassenger.travel_date} onChange={(e) => setEditPassenger({ ...editPassenger, travel_date: e.target.value })} /></TableCell>
+                          {/* <TableCell>{passenger.origin}</TableCell>
+                          <TableCell>{passenger.destination}</TableCell>
+                          <TableCell>{passenger.travel_date}</TableCell> */}
+                          <TableCell >
+                            <Button style={{gap:"10px"}} onClick={handleUpdate} color="success" variant="contained" size="small">Save</Button>
+                            <Button onClick={() => setEditPassenger(null)} color="secondary" size="small">Cancel</Button>
+                          </TableCell>
+                        </>
+                      ) : (
+                        <>
+                          <TableCell sx={{ textAlign: "center" }}>{passenger.first_name}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>{passenger.last_name}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>{passenger.age}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>{passenger.gender}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>{passenger.origin}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>{passenger.destination}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>{passenger.travel_date}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>
+                            <Button onClick={() => handleEdit(passenger)} color="primary" variant="contained">Edit</Button>
+                          </TableCell>
+                        </>
+                      )}
+                    </TableRow>
+                  ))}
+                  {/* Delete Button for the entire Booking */}
+                  <TableRow>
+                    <TableCell colSpan={9} sx={{ textAlign: "right", padding: "10px" }}>
+                      <Button onClick={() => handleDeleteBooking(bookingId)} color="error" variant="contained">
+                        Delete Booking
                       </Button>
                     </TableCell>
-                  </>
-                ) : (
-                  <>
-                    <TableCell>{passenger.first_name}</TableCell>
-                    <TableCell>{passenger.last_name}</TableCell>
-                    <TableCell>{passenger.age}</TableCell>
-                    <TableCell>{passenger.gender}</TableCell>
-                    <TableCell>{passenger.origin}</TableCell>
-                    <TableCell>{passenger.destination}</TableCell>
-                    <TableCell>{passenger.travel_date}</TableCell>
-                    <TableCell style={{ gap: "10px", display: "flex" }}>
-                      <ColorButton
-                        onClick={() => handleEdit(passenger)}
-                        color="primary"
-                        variant="contained"
-                      >
-                        Edit
-                      </ColorButton>
-                      <Button
-                        onClick={() => handleDelete(passenger.id)}
-                        color="error"
-                        variant="contained"
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </>
-                )}
+                  </TableRow>
+                </React.Fragment>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={9} align="center">No passengers found</TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
