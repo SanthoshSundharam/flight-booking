@@ -1,10 +1,13 @@
 import React from "react";
-import { Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button, Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert2
 
 const Header = ({ user }) => {
   const navigate = useNavigate();
+  const userEmail = localStorage.getItem("email") || "";
+  const avatarLetter = userEmail.charAt(0).toUpperCase();
+
 
   const handleLogout = () => {
     // ✅ SweetAlert confirmation before logging out
@@ -52,8 +55,11 @@ const Header = ({ user }) => {
           }}
           alt="Portal Logo"
           src="https://d12lchh0gjjhot.cloudfront.net/qa/uploadFiles/portalLogo/414_1729072841_portal_logo.svg"
-        ></Box>
+        >
+
+        </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Avatar>{avatarLetter}</Avatar>
           <Button variant="contained" color="error" sx={{ ml: 2 }} onClick={handleLogout}>
             Logout
           </Button>
