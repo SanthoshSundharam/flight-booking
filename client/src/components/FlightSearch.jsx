@@ -57,7 +57,7 @@ const FlightSearch = () => {
     }
   };
 
-
+ 
   const handlePassengerChange = (index, e) => {
     const { name, value } = e.target;
     setPassengerData((prev) => {
@@ -102,9 +102,14 @@ const FlightSearch = () => {
     }
   };
 
+
+  const handleCancel=()=>{
+    setPassengerData([]);
+   }
+
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
+    <Container maxWidth>
+      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, backgroundColor: "whitesmoke" }}>
         <Typography variant="h5" gutterBottom sx={{ textAlign: "center", pb: 2 }}>
           Search Flight
         </Typography>
@@ -126,7 +131,7 @@ const FlightSearch = () => {
           <form onSubmit={handleSubmit}>
             <Typography variant="h6">Enter Passenger Details</Typography>
 
-            <TableContainer component={Paper} sx={{ mt: 3 }}>
+            <TableContainer maxWidth component={Paper} sx={{ mt: 3,width: "100%", maxWidth: "1400" }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -197,9 +202,14 @@ const FlightSearch = () => {
               </Table>
             </TableContainer>
 
-            <Button type="submit" variant="contained" color="secondary" sx={{ mt: 2, width: 150, borderRadius: "50px" }}>
+            <Box sx={{display:"flex", justifyContent:"space-between"}}>
+            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2, width: 150, borderRadius: "5px" }}>
               Submit
             </Button>
+            <Button type="cancel" variant="contained" color="error" sx={{ mt: 2, width: 150, borderRadius: "5px" }} onClick={handleCancel}>
+              Cancel
+            </Button>
+            </Box>
           </form>
         </Box>
       )}

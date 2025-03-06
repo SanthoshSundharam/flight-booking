@@ -39,12 +39,11 @@ const Header = ({ user }) => {
   };
 
   return (
-    <div style={{ margin: "0px", height: "35vh" }}>
+    <div style={{ margin: "0px"}}>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          margin: "10px",
         }}
       >
         <Box
@@ -59,10 +58,12 @@ const Header = ({ user }) => {
 
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Avatar>{avatarLetter}</Avatar>
-          <Button variant="contained" color="error" sx={{ ml: 2 }} onClick={handleLogout}>
-            Logout
-          </Button>
+          {
+            localStorage.getItem("email") &&  <><Avatar>{avatarLetter}</Avatar>
+            <Button variant="contained" color="error" sx={{ ml: 2 }} onClick={handleLogout}>
+              Logout
+            </Button></>
+          }
         </Box>
       </Box>
     </div>

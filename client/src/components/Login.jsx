@@ -4,7 +4,7 @@ import { TextField, Button, Container, Typography, Box, Paper } from "@mui/mater
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2"; 
-import Image from '../assets/bgLogin.jpg';
+import Image from '../assets/map2.jpg';
 
 const Login = () => {
   const {

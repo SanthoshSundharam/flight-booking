@@ -106,19 +106,19 @@ const UserList = () => {
         </Button>
       </Box>
 
-      <TableContainer maxWidth component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
-        <Table>
+      <TableContainer  component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
+        <Table sx={{ maxWidth: 1700 }}>
           <TableHead>
-            <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Passenger</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>First Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Last Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Age</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Gender</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Origin</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Destination</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Date</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: "#2e2b2be1",  }}>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center",color:"white" }}>Passenger</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center",color:"white" }}>First Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center",color:"white" }}>Last Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center",color:"white" }}>Age</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center", color:"white" }}>Gender</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center", color:"white" }}>Origin</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center", color:"white" }}>Destination</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center", color:"white" }}>Date</TableCell>
+              <TableCell sx={{ fontWeight: "bold", textAlign: "center", color:"white" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

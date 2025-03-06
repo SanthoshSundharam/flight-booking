@@ -5,10 +5,12 @@ import UserList from "./components/UserList";
 import Login from "./components/Login";
 import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import RegistrationPage from "./components/RegistrationPage";
+import Header from "./components/Header";
 
 const App = () => {
   return (
     <Router>
+      <Header/>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<RegistrationPage />} />
