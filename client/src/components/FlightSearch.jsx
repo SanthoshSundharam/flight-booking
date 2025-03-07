@@ -29,13 +29,11 @@ const FlightSearch = () => {
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-
     const storedEmail = localStorage.getItem("email");
     if (storedEmail) {
       setUserEmail(storedEmail);
     }
   }, []);
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,7 +55,6 @@ const FlightSearch = () => {
     }
   };
 
- 
   const handlePassengerChange = (index, e) => {
     const { name, value } = e.target;
     setPassengerData((prev) => {
@@ -67,17 +64,19 @@ const FlightSearch = () => {
     });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/servers/passengers.php", {
-        email: userEmail, // Send email instead of user_id
-        origin: formData.origin,
-        destination: formData.destination,
-        date: formData.date,
-        passengers: passengerData,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/servers/passengers.php",
+        {
+          email: userEmail, // Send email instead of user_id
+          origin: formData.origin,
+          destination: formData.destination,
+          date: formData.date,
+          passengers: passengerData,
+        }
+      );
 
       // SweetAlert for success
       Swal.fire({
@@ -102,25 +101,80 @@ const FlightSearch = () => {
     }
   };
 
-
-  const handleCancel=()=>{
+  const handleCancel = () => {
     setPassengerData([]);
-   }
+  };
 
   return (
-    <Container maxWidth>
-      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, backgroundColor: "whitesmoke" }}>
-        <Typography variant="h5" gutterBottom sx={{ textAlign: "center", pb: 2 }}>
+    <Container maxWidth sx={{}}>
+      <Box
+        sx={{
+          mt: 4,
+          p: 3,
+          boxShadow: 3,
+          borderRadius: 2,
+          backgroundColor: "#ffffffac",
+        }}
+      >
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ textAlign: "center", pb: 2 }}
+        >
           Search Flight
         </Typography>
 
-        <form onSubmit={handleSearch} style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <TextField name="origin" placeholder="Enter Origin" fullWidth margin="normal" required value={formData.origin} onChange={handleChange} />
-          <TextField name="destination" placeholder="Destination" fullWidth margin="normal" required value={formData.destination} onChange={handleChange} />
-          <TextField name="date" placeholder="Date" type="date" fullWidth margin="normal" required value={formData.date} onChange={handleChange} InputLabelProps={{ shrink: true }} />
-          <TextField name="numPassengers" placeholder="No of Passengers" type="number" required fullWidth margin="normal" value={formData.numPassengers} onChange={handleChange} />
+        <form
+          onSubmit={handleSearch}
+          style={{ display: "flex", gap: 12, alignItems: "center" }}
+        >
+          <TextField
+            name="origin"
+            placeholder="Enter Origin"
+            fullWidth
+            margin="normal"
+            required
+            value={formData.origin}
+            onChange={handleChange}
+          />
+          <TextField
+            name="destination"
+            placeholder="Destination"
+            fullWidth
+            margin="normal"
+            required
+            value={formData.destination}
+            onChange={handleChange}
+          />
+          <TextField
+            name="date"
+            placeholder="Date"
+            type="date"
+            fullWidth
+            margin="normal"
+            required
+            value={formData.date}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            name="numPassengers"
+            placeholder="No of Passengers"
+            type="number"
+            required
+            fullWidth
+            margin="normal"
+            value={formData.numPassengers}
+            onChange={handleChange}
+          />
 
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ m: 1, fontWeight: "600", px: 5, width: 100 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ m: 1, fontWeight: "600", px: 5, width: 100 }}
+          >
             Search
           </Button>
         </form>
@@ -131,21 +185,33 @@ const FlightSearch = () => {
           <form onSubmit={handleSubmit}>
             <Typography variant="h6">Enter Passenger Details</Typography>
 
-            <TableContainer maxWidth component={Paper} sx={{ mt: 3,width: "100%", maxWidth: "1400" }}>
+            <TableContainer
+              maxWidth
+              component={Paper}
+              sx={{ mt: 3, width: "100%", maxWidth: "1400" }}
+            >
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: "bold" }}>Passenger No.</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>First Name</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      Passenger No.
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      First Name
+                    </TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>Last Name</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>Age</TableCell>
-                    <TableCell sx={{ fontWeight: "bold", width: 160 }}>Gender</TableCell>
+                    <TableCell sx={{ fontWeight: "bold", width: 160 }}>
+                      Gender
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {passengerData.map((passenger, index) => (
-                    <TableRow key={index+1}>
-                      <TableCell sx={{ fontWeight: "bold" }}>Passenger {passenger.passengerNumber}</TableCell>
+                    <TableRow key={index + 1}>
+                      <TableCell sx={{ fontWeight: "bold" }}>
+                        Passenger {passenger.passengerNumber}
+                      </TableCell>
                       <TableCell>
                         <TextField
                           name="firstName"
@@ -202,13 +268,24 @@ const FlightSearch = () => {
               </Table>
             </TableContainer>
 
-            <Box sx={{display:"flex", justifyContent:"space-between"}}>
-            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2, width: 150, borderRadius: "5px" }}>
-              Submit
-            </Button>
-            <Button type="cancel" variant="contained" color="error" sx={{ mt: 2, width: 150, borderRadius: "5px" }} onClick={handleCancel}>
-              Cancel
-            </Button>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, width: 150, borderRadius: "5px" }}
+              >
+                Submit
+              </Button>
+              <Button
+                type="cancel"
+                variant="contained"
+                color="error"
+                sx={{ mt: 2, width: 150, borderRadius: "5px" }}
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
             </Box>
           </form>
         </Box>

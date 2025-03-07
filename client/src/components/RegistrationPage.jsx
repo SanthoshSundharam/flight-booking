@@ -66,13 +66,10 @@ const RegistrationPage = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundImage: `url(${Image})`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
+        mt:10
       }}
     >
       <Paper

@@ -93,14 +93,11 @@ const UserList = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ my: 3 }}>
       <Typography variant="h4" sx={{ textAlign: "center", mb: 3 }}>
         Passenger List
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-        <Button variant="contained" color="primary" onClick={fetchPassengers}>
-          Refresh List
-        </Button>
         <Button variant="contained" color="primary" onClick={() => navigate("/home")}>
           Back
         </Button>

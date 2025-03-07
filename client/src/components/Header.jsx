@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Box, Button, Avatar } from "@mui/material";
+import { Typography, Box, Button, Avatar, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert2
 
@@ -39,11 +39,12 @@ const Header = ({ user }) => {
   };
 
   return (
-    <div style={{ margin: "0px"}}>
+    <Container>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
+
         }}
       >
         <Box
@@ -51,6 +52,7 @@ const Header = ({ user }) => {
           sx={{
             height: 100,
             width: 200,
+            
           }}
           alt="Portal Logo"
           src="https://d12lchh0gjjhot.cloudfront.net/qa/uploadFiles/portalLogo/414_1729072841_portal_logo.svg"
@@ -66,7 +68,7 @@ const Header = ({ user }) => {
           }
         </Box>
       </Box>
-    </div>
+    </Container>
   );
 };
 

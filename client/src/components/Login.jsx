@@ -1,12 +1,19 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Container, Typography, Box, Paper } from "@mui/material";
+import { TextField, Button, Typography, Box, Paper } from "@mui/material";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2"; 
-import Image from '../assets/map2.jpg';
+import {createGlobalStyle} from 'styled-components';
+import '../index.css'
 
 const Login = () => {
+
+  const GlobalStyle = createGlobalStyle`
+      body{
+        font-family: "Poppins", sans-serif;
+      }`
+
   const {
     register,
     handleSubmit,
@@ -60,15 +67,16 @@ const Login = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
+        height:"70vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundImage: `url(${Image})`,
+        backgroundImage: `url("https://www.claritytts.com/assets/img/New-signup-images/signup-background.png")`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
     >
+      <GlobalStyle/>
       <Paper elevation={10} sx={{ padding: 6, maxWidth: 350, textAlign: "center", backgroundColor: "rgba(255, 255, 255, 0.938)", borderRadius: 3 }}>
         <Typography variant="h5" gutterBottom>
           Login

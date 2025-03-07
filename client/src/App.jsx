@@ -1,51 +1,39 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import UserList from "./components/UserList";
 import Login from "./components/Login";
-import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
+import PrivateRoute from "./routers/PrivateRoute";
+import PublicRoute from "./routers/PublicRoute";
 import RegistrationPage from "./components/RegistrationPage";
 import Header from "./components/Header";
 
+
 const App = () => {
   return (
-    <Router>
-      <Header/>
+
+      
+      <Router>
+
+      <Header />
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<RegistrationPage />} />
-        <Route path="/home" element={<PrivateRoute />}>
-          <Route index element={<HomePage />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Public routes (login & register should be restricted for logged-in users) */}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegistrationPage />} />
         </Route>
-        <Route path="/users" element={<PrivateRoute />}>
-          <Route index element={<UserList />} />
+
+        {/* Private routes (show Header only after login) */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/users" element={<UserList />} />
         </Route>
       </Routes>
     </Router>
+    
   );
 };
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

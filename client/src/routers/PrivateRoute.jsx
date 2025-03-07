@@ -4,25 +4,26 @@ import { jwtDecode } from "jwt-decode";
 
 const PrivateRoute = () => {
   const token = localStorage.getItem("token");
-
   if (!token) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
-
+  
   try {
     const decoded = jwtDecode(token);
     const currentTime = Date.now() / 1000; // Convert to seconds
 
     if (decoded.exp < currentTime) {
       localStorage.removeItem("token");
-      return <Navigate to="/" replace />;
+      return <Navigate to="/login" replace />;
     }
 
     return <Outlet />; // If valid, render the requested page
   } catch (error) {
     localStorage.removeItem("token");
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
+
+  
 };
 
 export default PrivateRoute;
